@@ -8,6 +8,58 @@
     <title>Long Polling</title>
 </head>
 <body>
+<h2>Notificaciones</h2>
+<ul id="notificaciones">
 
+</ul>
+
+
+<script>
+    const listaNotificaciones = document.getElementById('notificaciones');
+
+    function mostrarNotificaciones(notificaciones){
+        for (let notif of notificaciones){
+            const li = document.createElement('li');
+            li.textContent = notif.cuerpo;
+
+            listaNotificaciones.appendChild(li);
+        }
+    }
+
+    async function obtenerNotificaciones(){
+        const resp = await fetch('http://localhost:3001/notificaciones');
+        const json = await resp.json();
+        const notificaciones = json.notificaciones;
+
+        if (notificaciones.length > 0){
+            mostrarNotificaciones(notificaciones);
+        }
+    }
+
+    function mostrarNotificacion(notificacion){
+        const li = document.createElement('li');
+        li.innerText = notificacion.cuerpo;
+
+        listaNotificaciones.appendChild(li);
+    }
+
+    async function obtenerNuevaNotificacion(){
+        const resp = await fetch('http://localhost:3001/nuevaNotificacion'); //esperando
+        const json = await resp.json();//respondio el servidor
+        const notificacion = json.notificacion;
+
+        mostrarNotificacion(notificacion);
+
+        obtenerNuevaNotificacion();
+    }
+
+    //IIFE - Immediately Invoked Function Expression
+    (async () => {
+        await obtenerNotificaciones();
+        await obtenerNuevaNotificacion();
+    })();
+
+
+</script>
 </body>
 </html>
